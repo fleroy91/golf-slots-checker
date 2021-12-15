@@ -1,4 +1,4 @@
-# Glof Slot Checker
+# Golf Slot Checker
 
 This project will fetch the API of the Troon app and the Viya app to look for golf tee times
 And update a GSheet
