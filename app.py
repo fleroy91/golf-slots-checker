@@ -2,8 +2,16 @@ import requests
 import json
 from datetime import date, timedelta
 
+START_TIME = "06:00"
+END_TIME = "10:00"
+FRIDAY = True
+SATURDAY = True
+TROON = True
+VIYA = True
 
 def get_troon(date):
+    if not TROON:
+        return
     TROON_ENDPOINT= "https://apilive.back9solutions.com/api/assets"
     TROON_BEARER= "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hcGlsaXZlLmJhY2s5c29sdXRpb25zLmNvbVwvYXBpXC9vdHBzXC92ZXJpZnkiLCJpYXQiOjE2Mzc2NDE3ODcsImV4cCI6MTY0MTI0MTc4NywibmJmIjoxNjM3NjQxNzg3LCJqdGkiOiJtdUIxdTc2RmplSVZDc0hTIiwic3ViIjoyNjE4OSwicHJ2IjoiNGFjMDVjMGY4YWMwOGYzNjRjYjRkMDNmYjhlMWY2MzFmZWMzMjJlOCJ9.pgj06jlqtSyDRcWbkziaq9fXKwUBWqB2kYGpx0ZbCDE"
     TROON_GOLFS = {
@@ -28,8 +36,8 @@ def get_troon(date):
         }
         params = {
             "page": 1,
-            "start_time": "06:00",
-            "end_time": "10:00",
+            "start_time": START_TIME,
+            "end_time": END_TIME,
             "available_spaces": 1,
             "include": "rate,location,prices"
         }
@@ -53,6 +61,8 @@ def get_troon(date):
                     break
 
 def get_viya(date):
+    if not VIYA:
+        return
     VIYA_ENDPOINT= "https://wasl-api.reciproci.com/api/ns/customer/nonmember/v6/findAvailability"
     VIYA_BEARER="c4289c92-2dbd-4448-846c-5eb23f7ae81b"
 
@@ -78,14 +88,14 @@ def get_viya(date):
             "mType":"744,745,746,782,784,1004,1032,1016,1113,1143,1144,1145,1063,1013",
             "clubID":2,
             "holes":18,
-            "bookingTime":"06:00",
+            "bookingTime":START_TIME,
             "bookingDate":date_str
         },
         {
             "incShotGunTimes":False,
             "mType":"744,745,746,782,784,1004,1016,1143,1144,1145,1063,1113",
             "pax":1,
-            "bookingTime":"06:00",
+            "bookingTime":START_TIME,
             "clubID":3,
             "holes":18,
             "bookingDate":date_str,
@@ -95,7 +105,7 @@ def get_viya(date):
             "holes":18,
             "courseID":"97101-201-0000000020",
             "pax":1,
-            "bookingTime":"06:00",
+            "bookingTime":START_TIME,
             "clubID":3,
             "bookingDate":date_str,
             "mType":"744,745,746,782,784,1004,1016,1143,1144,1145,1063,1113",
@@ -109,7 +119,7 @@ def get_viya(date):
             "courseID":"97101-201-0000000006",
             "pax":1,
             "mType":"744,745,746,782,784,1058,1004,1143,1144,1145,1063,1113",
-            "bookingTime":"06:00"
+            "bookingTime":START_TIME
         },
         {
             "clubID":3,
@@ -119,7 +129,7 @@ def get_viya(date):
             "holes":18,
             "pax":1,
             "courseID":"97101-201-0000000028",
-            "bookingTime":"06:00"
+            "bookingTime":START_TIME
         }
     ],
     "mTypeList":[
@@ -243,11 +253,13 @@ today = date.today()
 friday = today + timedelta(days=(5 - today.weekday()) % 7 - 1)
 saturday = today + timedelta(days=(6 - today.weekday()) % 7 - 1)
 
-print("*{} {}*".format("Friday", friday))
-get_troon(friday)
-get_viya(friday)
+if FRIDAY:
+    print("*{} {}*".format("Friday", friday))
+    get_troon(friday)
+    get_viya(friday)
 
-print("")
-print("*{} {}*".format("Saturday", saturday))
-get_troon(saturday)
-get_viya(saturday)
+if SATURDAY:
+    print("")
+    print("*{} {}*".format("Saturday", saturday))
+    get_troon(saturday)
+    get_viya(saturday)
