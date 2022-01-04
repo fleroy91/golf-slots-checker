@@ -2,10 +2,11 @@ import requests
 import json
 from datetime import date, timedelta
 
-START_TIME = "06:00"
-END_TIME = "10:00"
-FRIDAY = True
+START_TIME = "07:00" # "06:00"
+END_TIME = "11:00" # "10:00"
+FRIDAY = False # True
 SATURDAY = True
+SUNDAY = True
 TROON = True
 VIYA = True
 
@@ -13,7 +14,7 @@ def get_troon(date):
     if not TROON:
         return
     TROON_ENDPOINT= "https://apilive.back9solutions.com/api/assets"
-    TROON_BEARER= "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hcGlsaXZlLmJhY2s5c29sdXRpb25zLmNvbVwvYXBpXC9vdHBzXC92ZXJpZnkiLCJpYXQiOjE2Mzc2NDE3ODcsImV4cCI6MTY0MTI0MTc4NywibmJmIjoxNjM3NjQxNzg3LCJqdGkiOiJtdUIxdTc2RmplSVZDc0hTIiwic3ViIjoyNjE4OSwicHJ2IjoiNGFjMDVjMGY4YWMwOGYzNjRjYjRkMDNmYjhlMWY2MzFmZWMzMjJlOCJ9.pgj06jlqtSyDRcWbkziaq9fXKwUBWqB2kYGpx0ZbCDE"
+    TROON_BEARER= "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hcGlsaXZlLmJhY2s5c29sdXRpb25zLmNvbVwvYXBpXC9vdHBzXC92ZXJpZnkiLCJpYXQiOjE2NDEzMDQwOTcsImV4cCI6MTY0NDkwNDA5NywibmJmIjoxNjQxMzA0MDk3LCJqdGkiOiJJTk9yNXFid3FBYUU4NGY2Iiwic3ViIjoyNjE4OSwicHJ2IjoiNGFjMDVjMGY4YWMwOGYzNjRjYjRkMDNmYjhlMWY2MzFmZWMzMjJlOCJ9.HcD0s0t-mfIeL_4zYv7EW1XC7sQqq5R8smhO3bdSEDw"
     TROON_GOLFS = {
         "9": "Montgommerie",
         "11": "Arabian Ranches",
@@ -22,6 +23,7 @@ def get_troon(date):
         # "4": "Al Zorah"
         }
     # https://apilive.back9solutions.com/api/assets/9/slots/2021-12-17?page=1&start_time=00:00&available_spaces=1&include=rate,location,prices
+    # https://apilive.back9solutions.com/api/assets/2022-01-04/available?include=facility&type=golf_course&date=2022-01-04&country=AE&available_spaces=1&start_time=00:00&end_time=23:59&range_name=Anytime
 
     for course_id in TROON_GOLFS:
         course_name = TROON_GOLFS[course_id]
@@ -29,9 +31,10 @@ def get_troon(date):
         # print(url)
         headers = {
             "Host": "apilive.back9solutions.com",
+            "Origin": "ionic://localhost",
             "Authorization": "Bearer {}".format(TROON_BEARER),
             "Accept": "application/json",
-            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
             "X-Platform-Token": "troonkey"
         }
         params = {
@@ -64,7 +67,7 @@ def get_viya(date):
     if not VIYA:
         return
     VIYA_ENDPOINT= "https://wasl-api.reciproci.com/api/ns/customer/nonmember/v6/findAvailability"
-    VIYA_BEARER="c4289c92-2dbd-4448-846c-5eb23f7ae81b"
+    VIYA_BEARER="02876dc1-bd38-43f1-844b-9a1ecc3147c3"
 
     url = VIYA_ENDPOINT
     date_str = "{}".format(date)
@@ -252,6 +255,7 @@ def get_viya(date):
 today = date.today()
 friday = today + timedelta(days=(5 - today.weekday()) % 7 - 1)
 saturday = today + timedelta(days=(6 - today.weekday()) % 7 - 1)
+sunday = today + timedelta(days=(7 - today.weekday()) % 7 - 1)
 
 if FRIDAY:
     print("*{} {}*".format("Friday", friday))
@@ -263,3 +267,9 @@ if SATURDAY:
     print("*{} {}*".format("Saturday", saturday))
     get_troon(saturday)
     get_viya(saturday)
+
+if SUNDAY:
+    print("")
+    print("*{} {}*".format("Sunday", sunday))
+    get_troon(sunday)
+    get_viya(sunday)
