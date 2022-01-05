@@ -2,10 +2,14 @@ import requests
 import json
 from datetime import date, timedelta
 
-START_TIME = "07:00" # "06:00"
-END_TIME = "11:00" # "10:00"
+START_TIME = "07:00"
+END_TIME = "11:00"
+# START_TIME = "12:00"
+# END_TIME = "15:00"
+MAX_NB_PLAYERS = 4
+MIN_NB_PLAYERS = 2 # 1
 FRIDAY = False # True
-SATURDAY = True
+SATURDAY = False # True
 SUNDAY = True
 TROON = True
 VIYA = True
@@ -50,7 +54,7 @@ def get_troon(date):
         # print(result)
         data = result["data"]
         first = True
-        for nb_slots in range(4, 0, -1):
+        for nb_slots in range(MAX_NB_PLAYERS, MIN_NB_PLAYERS - 1, -1):
             for elem in data:
                 if elem["available_spaces"] == nb_slots:
                     for price in elem["prices"]["data"]["channels"]["data"]:
@@ -235,12 +239,12 @@ def get_viya(date):
     for elem in data:
         first = True
         course_name = elem["courseName"]
-        for nb_pax in range(4, 0, -1):
+        for nb_pax in range(MAX_NB_PLAYERS, MIN_NB_PLAYERS - 1, -1):
             for avail in elem["timesAvail"]:
                 if avail["pax"] == nb_pax:
                     p = None
                     for price in avail["priceDetailsList"]:
-                        if p is None or price["price"] < p:
+                        if price["price"] > 0 and (p is None or price["price"] < p):
                             p = price["price"]
 
                     if first:
